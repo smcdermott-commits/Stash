@@ -89,7 +89,3 @@ Early development.
 **In progress:** data model, backend API, Instagram share capture, background processing
 **Planned:** AI enrichment, search, diagnostics dashboard, notifications
 **Later:** additional ingestion sources, Android, data export
-
-## License
-
-TBD
