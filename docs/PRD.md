@@ -80,8 +80,11 @@ V1: a single user (the builder). Designed so that user-ownership concepts (`user
 
 ### 5. Organization
 
-- Collections (folders) — one per post, user-assigned or default
-- Tags — many-to-many, can be AI-generated or manual
+- **Collections** (folders for posts) — each post belongs to at most one collection. `collection_id` is nullable; posts with no collection are "unsorted" rather than forced into a folder.
+- Default save behavior is configurable: leave new posts unsorted, or auto-assign them to a user-chosen default collection. Either way, the collection can be changed at any time, including from the capture overlay.
+- The Library/Home view must include an explicit "Unsorted" or "All" filter so unassigned posts remain visible and discoverable, not just accessible by accident.
+- **Libraries** (folders for resources) — a resource can belong to multiple libraries (many-to-many), since resources are more naturally cross-cutting than posts (e.g., a single website can reasonably belong to both "Learning" and "Programming").
+- Tags — many-to-many, apply to posts, can be AI-generated or manual
 - Optional personal note per post ("why did I save this?")
 
 ### 6. Search
@@ -117,12 +120,17 @@ V1: a single user (the builder). Designed so that user-ownership concepts (`user
 ```
 User
 Collection
-Post (source, source_url, title, summary, caption, collection_id, status)
+Post (source, source_url, title, summary, caption, collection_id [nullable], status)
 Media (post_id, type, position, storage_key)
 Tag / PostTag
-Resource / PostResource
+Resource
+Library
+ResourceLibrary (resource_id, library_id)   — many-to-many
+PostResource (post_id, resource_id)         — many-to-many
 ProcessingJob (post_id, operation, status, attempts, error, timestamps)
 ```
+
+Posts have a single, optional (nullable) collection — a post is either filed under one folder or left unsorted. Resources may belong to multiple libraries, and are independently linked to every post that mentions them via `PostResource`. These are two separate many-to-many relationships on `Resource`, not one.
 
 All user-owned entities include a `user_id` field from the start, even with a single user, to avoid retrofitting ownership later.
 
